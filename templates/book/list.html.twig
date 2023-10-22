@@ -1,0 +1,30 @@
+<h1>List of Books</h1>
+<table border="1">
+    <tr>
+        <th>title</th>
+        <th>category</th>
+        <th>publishedDate</th>
+        <th>published</th>
+        <th>author</th>
+        <th class="text-center">Action</th>
+    </tr>
+    {% for b in books %}
+        <tr>
+            <td>{{ b.title }}</td>
+            <td>{{ b.category }}</td>
+            <td>{{ b.publishedDate|date('M-d-Y') }}</td>
+            <td>{{ b.published }}</td>
+            <td><a href="{{ path('app_author_books', {'authorId': b.author.id}) }}">{{ b.author.username }}</a></td>
+
+            <td class="text-center">
+
+                <a href="{{ path('app_updatebook', {'ref': b.ref}) }}">Update</a>
+                <a href="{{ path('app_deletebook', {'ref': b.ref}) }}">Delete</a>
+                <a href="{{ path('app_detailbook', {'ref': b.ref}) }}">Details</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<button style="background-color: #b7f7ff; color: #000000; margin-top: 15px" onclick="location.href='{{ path('app_addbook') }}'">Add New Book</button>
+
+<p>Number of Published Books: {{ nbpub }}</p>

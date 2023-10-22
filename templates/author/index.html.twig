@@ -1,0 +1,6 @@
+
+{% for a in authors %}
+{{ a.username }}
+    {{ a.email }}
+    <a  href="{{ path('app_addauthor', {'id': a.id}) }}">add</a>
+{% endfor %}
