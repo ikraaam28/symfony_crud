@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Author;
 use App\Entity\Book;
 use App\Form\BookType;
+use App\Form\SearchRefType;
 use App\Repository\AuthorRepository;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,12 +22,52 @@ class BookController extends AbstractController
     #[Route('/listbook', name: 'app_listbook')]
     public function showbook(BookRepository $repo): Response
     {
-        $books=$repo->findAll();
+         // $books=$repo->findAll();
+        //3. Afficher la liste des livres Trier par auteur
+                 // $books = $repo->findAllByAuthor();
+       //4. Afficher la liste des livres publiés avant l’année 2023 dont l’auteur a plus de 35
+        //livres
+                 //  $books=$repo->findAllByDateAndNbBook();
+        $books = $repo->findBooksBetween2Dates();
         $nbpub=count($repo->findBy(['published'=>true]));
+        $totalScienceFictionBooks = $repo->sumBooksInCategory();
 
         return $this->render('book/list.html.twig', [
-            'books' => $books,'nbpub'=>$nbpub
+            'books' => $books,'nbpub'=>$nbpub,'totalScienceFictionBooks'=>$totalScienceFictionBooks
         ]);
+    }
+    #[Route('/listbook/{id}', name: 'app_listbookbyauthor')]
+    public function showbookbyauthor(BookRepository $repo,$id): Response
+    {
+        $books=$repo->showAllBooksByAuthor($id);
+
+
+        return $this->render('book/bookbyauthor.html.twig', [
+            'books' => $books
+        ]);
+    }
+    #[Route('/searchref', name: 'app_searchref')]
+    public function searchref(BookRepository $bookrepo,Request $request): Response
+    {
+        $books=$bookrepo->findAll();
+        $form=$this->createForm(SearchRefType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()){
+            $ref=$form->get('ref')->getData();
+            //$books=$bookrepo->findBy(['ref'=>$ref]);
+              $books=$bookrepo->findref($ref);
+        }
+        return $this->render('book/listandsearch.html.twig', [
+            'books' => $books,'form'=>$form->createView()
+        ]);
+    }
+
+     #[Route('/updatecategory', name: 'app_update_category')]
+    public function updateCategoryBook(BookRepository $bookRepository)
+    {
+        $bookRepository->updateCategory();
+
+        return $this->redirectToRoute('app_listbook');
     }
     #[Route('/author/{authorId}/books', name: 'app_author_books')]
     public function booksByAuthor(BookRepository $bookRepository, AuthorRepository $authorRepository, int $authorId): Response

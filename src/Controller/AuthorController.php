@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Author;
 use App\Form\AuthorType;
+use App\Form\MinMaxType;
 use App\Repository\AuthorRepository;
 
 use App\Repository\BookRepository;
@@ -22,10 +23,39 @@ class AuthorController extends AbstractController
     #[Route('/listauthor', name: 'app_listauthor')]
     public function listeauthor(AuthorRepository $rep): Response
     {
-        $author=$rep->findAll();
+        $author=$rep->findAll28();
         return $this->render('author/list.html.twig', [
             'authors' => $author,
         ]);
+    }
+    #[Route('/MinMax', name: 'app_minmax')]
+    public function MinMax(AuthorRepository $repo,Request $request): Response
+    {
+        $author=$repo->findAll();
+        $form=$this->createForm(MinMaxType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()){
+            $min=$form->get('min')->getData();
+            $max=$form->get('max')->getData();
+            //$author=$repo->findBy(['ref'=>$ref]);
+            $author=$repo->findminmax($min,$max);
+        }
+        return $this->render('author/index.html.twig', [
+            'author' => $author,'form'=>$form->createView()
+        ]);
+    }
+    #[Route('/DeleteAuthorZeroBook', name: 'app_zerobook')]
+    public function deleteAuthorsWithZeroBooks(AuthorRepository $authorRepository, EntityManagerInterface $entityManager)
+    {
+        $authorsWithZeroBooks = $authorRepository->findAuthorsWithZeroBooks();
+
+        foreach ($authorsWithZeroBooks as $author) {
+            $entityManager->remove($author);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_listauthor');
     }
     #[Route('/author/{authorId}/books', name: 'app_author_books')]
     public function booksByAuthor(BookRepository $bookRepository, AuthorRepository $authorRepository, int $authorId): Response

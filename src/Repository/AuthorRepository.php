@@ -20,6 +20,50 @@ class AuthorRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Author::class);
     }
+public function findAll28(){
+    $req= $this->createQueryBuilder('a')
+->orderBy('a.email','ASC')
+        ->getQuery();
+
+       //afficher requette  dd($req->getSQL());
+    //afficher entity   dd($req->getDQL());
+    return $req->getResult();
+}
+public function findAll3(){
+    $em=$this->getEntityManager();
+    $req=$em->createQuery('SELECT a FROM App\Entity\Author a');
+    return $req->getResult();
+}
+
+    public function findminmax($min,$max)
+
+    {
+
+        $qb = $this->createQueryBuilder('a');
+
+        if ($min !== null) {
+            $qb->andWhere($qb->expr()->gte('a.nb_books', ':min'));
+            $qb->setParameter('min', $min);
+        }
+
+        if ($max !== null) {
+            $qb->andWhere($qb->expr()->lte('a.nb_books', ':max'));
+            $qb->setParameter('max', $max);
+        }
+
+        return $qb->getQuery()->getResult();}
+    // src/Repository/AuthorRepository.php
+
+// src/Repository/AuthorRepository.php
+
+    public function findAuthorsWithZeroBooks()
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.nb_books = 0')
+            ->getQuery()
+            ->getResult();
+    }
+
 
 //    /**
 //     * @return Author[] Returns an array of Author objects

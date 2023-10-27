@@ -1,6 +1,32 @@
+<form method="post" action="{{ path('app_minmax') }}">
+    {{ form_start(form) }}
+    {{ form_row(form.min) }}
+    {{ form_row(form.max) }}
+    <button type="submit">search </button>
+    {{ form_end(form) }}
+</form>
 
-{% for a in authors %}
-{{ a.username }}
-    {{ a.email }}
-    <a  href="{{ path('app_addauthor', {'id': a.id}) }}">add</a>
-{% endfor %}
+<table border="1">
+    <tr>
+
+        <td>username</td>
+        <td>email</td>
+        <td>nbbooks</td>
+        <td class="text-center" >action</td>
+    </tr>
+    {% for a in author  %}
+
+        <tr>
+
+            <td><a href="{{ path('app_author_books', {'authorId': a.id}) }}">{{ a.username}}</a></td>
+            <td>{{ a.email}}</td>
+            <td>{{a.nbbooks}}</td>
+
+
+            <td><a href="{{  path('app_updateauthor',{'id':a.id}) }}" >Update</a>
+                <a href="{{  path('app_deleteauthor',{'id':a.id}) }}" >Delete</a></td>
+
+        </tr>
+
+    {%endfor %}
+</table>

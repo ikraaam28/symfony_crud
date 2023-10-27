@@ -1,0 +1,22 @@
+
+<table border="1">
+    <tr>
+        <th>title</th>
+        <th>category</th>
+        <th>publishedDate</th>
+        <th>published</th>
+        <th>author</th>
+        <th class="text-center">Action</th>
+    </tr>
+{% for b in books %}
+    <tr>
+        <td>{{ b.title }}</td>
+        <td>{{ b.category }}</td>
+        <td>{{ b.publishedDate|date('M-d-Y') }}</td>
+        <td>{{ b.published }}</td>
+        <td><a href="{{ path('app_listbookbyauthor', {'id': b.author.id}) }}">{{ b.author.username }}</a></td>
+
+
+    </tr>
+{% endfor %}
+</table>

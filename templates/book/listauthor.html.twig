@@ -1,20 +1,18 @@
 
-
-    <h1>Livres de {{ author.username }}</h1>
-    <table border="1">
-        <tr>
-            <th>Titre</th>
-            <th>Catégorie</th>
-            <th>Date de publication</th>
-            <th>Publié</th>
-        </tr>
-        {% for book in books %}
-            <tr>
-                <td>{{ book.title }}</td>
-                <td>{{ book.category }}</td>
-                <td>{{ book.publishedDate|date('M-d-Y') }}</td>
-                <td>{{ book.published ? 'Oui' : 'Non' }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-
+<h1>Livres de {{ author.username }}</h1>
+<table border="1">
+<tr>
+<th>Titre</th>
+<th>Catégorie</th>
+<th>Date de publication</th>
+<th>Publié</th>
+</tr>
+{% for book in books %}
+<tr>
+    <td>{{ book.title }}</td>
+    <td>{{ book.category }}</td>
+    <td>{{ book.publishedDate|date('M-d-Y') }}</td>
+    <td>{{ book.published ? 'Oui' : 'Non' }}</td>
+</tr>
+{% endfor %}
+</table>
